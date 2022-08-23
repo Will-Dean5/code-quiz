@@ -2,11 +2,11 @@ var state = 'start';
 var startEl = document.querySelector("#start");
 var quizEl = document.querySelector("#quiz");
 var endEl = document.querySelector("#end");
-var startBtn = document.querySelector("#start button");
-var submitScoreBtn = document.querySelector("#start button");
-var quizTitle = document.querySelector("#quiz title");
+var startBtn = document.querySelector("#startButton");
+var submitScoreBtn = document.querySelector("#submitBtn");
+var quizTitle = document.querySelector("#quizTitle");
 var questionsEl = document.querySelector("#questions");
-
+var titleEl = document.querySelector("#title");
 
 var questions = [
     {
@@ -15,7 +15,7 @@ var questions = [
         correct: '15',
     },
     {
-        qustion: 'How many stars are on the flag',
+        question: 'How many stars are on the flag',
         answers: ['13', '45', '50', '30'],
         correct: '50',
     },
@@ -31,9 +31,9 @@ var questions = [
     },
 ];
 
-var cursor = 0;
-
-function displayState() {
+var questionOrder = 0;
+state = 'start';
+function currentSelection() {
     if (state === 'start') {
         startEl.style.display = 'block';
         quizEl.style.display = 'none';
@@ -43,6 +43,7 @@ function displayState() {
         startEl.style.display = 'none';
         quizEl.style.display = 'block';
         endEl.style.display = 'none';
+        displayQuestion()
     }
     if (state === 'end') {
         startEl.style.display = 'none';
@@ -51,43 +52,50 @@ function displayState() {
     }
 }
 
-function init() {
-    displayState();
+
+currentSelection()
+function nextQuestion(event) {
+    questionOrder ++;
+    questionsEl.innerHTML = null 
+    if(questionOrder < questions.length) {
+        displayQuestion()
+    } else {
+        state = 'end'
+        currentSelection()
+    }
 }
 
-function reset() {
-    state = 'start';
-    cursor = 0;
-    init();
-}
+
 
 function displayQuestion() {
     state = 'quiz';
-    var titleText = questions[cursor];
-    quizTitle.textContent = titleText;
+    var questionDisplay = questions[questionOrder];
+    var questionH2 = document. createElement('h2');
+        questionH2.textContent = questions[questionOrder].question
+        questionsEl.appendChild(questionH2)
+    for(i = 0; i < questions[questionOrder].answers.length; i ++) {
+        
+        buttonEl = document.createElement('button')
+        buttonEl.textContent = questions[questionOrder].answers[i];
+        buttonEl.addEventListener('click', nextQuestion)
+        questionsEl.appendChild(buttonEl);
+
+    }
 }
 
-submitScoreBtn.addEventListener("click", function() {
-    reset();
+startBtn.addEventListener("click", function (event) {
+    state = 'quiz';
+    currentSelection()
 });
 
-startBtn.addEventListener("click", function(event) {
-    displayQuestion();
-    displayState();
+submitScoreBtn.addEventListener("click", function () {
+
 });
 
-quizTitle.addEventListener("click", function(event) {
-    var element = event.target;
-    if (element.matches('h2')) {
-        var index = Array.from(element.parentElement.children).indexOf(element);
-        console.log(index);
-        cursor++;
-
-        if (cursor >= questions.length) {
-            state = 'end';
-            displayState();
-        } else {
-            displayQuestion();
-        }
+function checkAnswer(answers) {
+    if(answers == question[questionOrder].correct) {
+        alert('correct')
+    } else {
+        alert('wrong')
     }
-});
+}
