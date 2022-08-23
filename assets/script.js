@@ -67,9 +67,20 @@ function startTimer() {
         timeEl.textContent = secondsLeft;
         if (secondsLeft === 0) {
             clearInterval(timeInterval)
+            currentSelection()
+            sendMessage()
+            state == 'end'
+
         }
+        if(state == 'end')
+            clearInterval(timeInterval)
+            score = secondsLeft
 
     }, 1000);
+};
+
+function sendMessage() {
+    timeEl.textContent = 'Time is up'
 };
 
 currentSelection()
@@ -115,6 +126,7 @@ submitScoreBtn.addEventListener("click", function () {
     state = 'scores'
     yourInitials = yourInitials.value
     localStorage.setItem('initials', yourInitials)
+    timeEl = JSON.stringify(secondsLeft)
     currentSelection()
 
 
@@ -126,6 +138,7 @@ function checkAnswer(answers) {
     }
     else {
         alert('Wrong!')
+        secondsLeft -= 30
     }
 };
 
