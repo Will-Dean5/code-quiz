@@ -1,9 +1,10 @@
+// variables for js
 var state = 'start';
 var startEl = document.querySelector("#start");
 var quizEl = document.querySelector("#quiz");
 var endEl = document.querySelector("#end");
 var startBtn = document.querySelector("#startButton");
-var submitScoreBtn = document.querySelector("#submitBtn");
+var submitScoreBtn = document.getElementById("submitBtn");
 var quizTitle = document.querySelector("#quizTitle");
 var questionsEl = document.querySelector("#questions");
 var titleEl = document.querySelector("#title");
@@ -12,7 +13,7 @@ var yourScores = document.querySelector('#yourScores');
 var timeEl = document.querySelector('.timeLeft');
 var secondsLeft = 60;
 
-
+// set up questions for quiz
 var questions = [
     {
         question: 'What is 10 + 5',
@@ -36,6 +37,7 @@ var questions = [
     },
 ];
 
+// 
 var questionOrder = 0;
 state = 'start';
 function currentSelection() {
@@ -59,7 +61,7 @@ function currentSelection() {
 
     }
 }
-
+// adds a timer to the top of the page
 timeEl.textContent = secondsLeft
 function startTimer() {
     var timeInterval = setInterval(function () {
@@ -72,13 +74,13 @@ function startTimer() {
             state == 'end'
 
         }
-        if(state == 'end')
+        if (state == 'end')
             clearInterval(timeInterval)
-            score = secondsLeft
+        score = secondsLeft
 
     }, 1000);
 };
-
+// says time is up when timer is at 0
 function sendMessage() {
     timeEl.textContent = 'Time is up'
 };
@@ -97,7 +99,7 @@ function nextQuestion(event) {
 }
 
 
-
+// displays question and when answered moves to the next
 function displayQuestion() {
     state = 'quiz';
     var questionDisplay = questions[questionOrder];
@@ -115,22 +117,23 @@ function displayQuestion() {
     }
 }
 
-
+// starts quiz when clicked
 startBtn.addEventListener("click", function () {
     state = 'quiz';
     currentSelection();
-    
-});
-
-submitScoreBtn.addEventListener("click", function () {
-    state = 'scores'
-    yourInitials = yourInitials.value
-    localStorage.setItem('initials', yourInitials)
-    timeEl = JSON.stringify(secondsLeft)
-    currentSelection()
-
 
 });
+// submits score to highscore page
+
+// state = 'scores'
+//Initials = yourInitials.value
+//localStorage.setItem('initials', Initials)
+//timeLeft = JSON.stringify(secondsLeft)
+//localStorage.setItem('time', timeLeft)
+//currentSelection()
+
+
+
 // checks if answer is right or wrong and displays a message that says correct or wrong
 function checkAnswer(answers) {
     if (answers == questions[questionOrder].correct) {
@@ -143,7 +146,7 @@ function checkAnswer(answers) {
 };
 
 function highScores(event) {
-    yourInitials = ''
+    event.preventDefault();
     for (var i = 0; i < initialsList.length; i++) {
         initial = yourInitials[i]
         var li = document.createElement('li')
@@ -153,3 +156,24 @@ function highScores(event) {
 
     }
 };
+
+
+submitScoreBtn.addEventListener("click", function () {
+    currentSelection()
+    var storedHighScores = JSON.parse(localStorage.getItem('highScore')) || []
+    var newHighScores = storedHighScores.concat({
+        time: secondsLeft.toString(),
+        initials: yourInitials.value,
+
+
+    },)
+        localStorage.setItem("high scores", JSON.stringify(newHighScores))
+    
+    console.log(newHighScores)
+    for(var i = 0; i < newHighScores.length; i++){
+        var iScore = newHighScores[i]
+        var iEl = document.createElement('p')
+        iEl.textContent = iScore.initials + ': ' + iScore.time
+        scores.append(iEl)
+    }
+})
